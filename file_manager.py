@@ -6,20 +6,22 @@
 #llegir_missatge(ruta), llegeix el missatge original
 #guardar_resultat(ruta,text), escriu el resultat a xifrat.txt o a desxifrat.txt
 
+import configuration
+
 def llegir_rotor(rotor):
     try:
         with open(rotor) as file:
             linies = file.readlines()
 
         if not linies:
-            return None
+            return False
         
         cablejat = linies[0].strip().upper()
 
-        notch = linies[1].strip().upper() if len(linies) > 1 else "Z"
+        notch = linies[1].strip().upper() if len(linies) > 1 else configuration.NOTCH_INICIAL #constant de configuration
 
         if validar_permutacio(cablejat) == False:
-            raise ValueError("El cablejat no és correcte")
+            return False
         
         else:
         
@@ -29,31 +31,36 @@ def llegir_rotor(rotor):
             }
 
     except FileNotFoundError:
-        print("ERROR: L'arxiu no s'ha trobat")
-        return None
-    except ValueError as error:
-         print(f"ERROR: {error}")
-         return None
+        print(f"ERROR: L'arxiu {rotor} no s'ha trobat")
+        return False
     except Exception as error:
-         print(f"ERROR: error inesperat, {error}")
-         return None
-    
-
-def guardar_rotor(rotor,cablejat,notch): #S'utilitzaran com a arguments el rotor que es vulgui editar, el cablejat que introdueixi l'usuari, i el notch, que es pot afegir o no
-    cablejat = cablejat.strip().upper()
-    notch = notch.strip().upper()
-    cablejat_provat = validar_permutacio(cablejat)
-    if cablejat_provat == False:
+         print(f"ERROR: Error inesperat: {error}")
          return False
-    else:
-         if notch == "":
-            notch = "Z"
-         else:
-              pass
-         with open(rotor, "w") as file:
-              file.write(cablejat_provat + "\n")
-              file.write(notch)
-    #FALTA AFEGIR ELS TRY EXCEPT I POSSIBLES ERRORS
+    
+def guardar_rotor(rotor,cablejat,notch): #S'utilitzaran com a arguments el rotor que es vulgui editar, el cablejat que introdueixi l'usuari, i el notch, que es pot afegir o no
+     try:
+          cablejat = cablejat.strip().upper()
+          notch = notch.strip().upper()
+          cablejat_provat = validar_permutacio(cablejat)
+          if cablejat_provat == False:
+                    print("El cablejat introduït no és correcte")
+               return False
+          else:
+               if notch == "":
+                    notch = configuration.NOTCH_INICIAL
+               else:
+                    pass
+               with open(rotor, "w") as file:
+                    file.write(cablejat + "\n")
+                    file.write(notch)
+               return True
+     except FileNotFoundError:
+          print(f"ERROR: L'arxiu {rotor} no s'ha trobat")
+          return False
+     except Exception as error:
+          print(f"ERROR: Error inesperat: {error}")
+          return False
+
 
 def validar_permutacio(cablejat):
      cablejat = cablejat.strip().upper()
@@ -69,8 +76,21 @@ def validar_permutacio(cablejat):
      return True
 
 def llegir_missatge(arxiu):
-     with open(arxiu) as file:
-         text = file.readlines()
+     try:
+          with open(arxiu) as file:
+               text_complet = file.read()
+          text_complet = text_complet.upper()
+          text_final = ""
+          for lletra in text_complet:
+               if lletra in configuration.ALFABET:
+                    text_final += lletra
+          return text_final
+     except FileNotFoundError:
+          print(f"ERROR: L'arxiu {arxiu} no s'ha trobat")
+          return False
+     except Exception as error:
+          print(f"ERROR: Error inesperat: {error}")
+          return False
 
 def guardar_resultat(arxiu_xifrat,text_xifrat):
      with open(arxiu_xifrat, "w") as file:
