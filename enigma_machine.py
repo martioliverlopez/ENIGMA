@@ -8,6 +8,7 @@
 
 
 #formatear_salida(texto_cifrado): Agrupa el texto en bloques de 5 letras separados por espacios.
+import configuration
 
 def formatejar_entrada(text):
 
@@ -73,11 +74,11 @@ def desxifrar_lletra(lletra,rotors,posicions):
 def passar_pel_rotor_invers(index_entrada, rotor, posicio_rotor):
     canvi = a_index(posicio_rotor)
 
-    index_ajustat = (index_entrada + offset) % 26
+    index_ajustat = (index_entrada + canvi) % 26
     lletra_a_buscar = a_lletra(index_ajustat)
 
-    index_trobat = cablejat_rotor.index(lletra_a_buscar)
-    index_final = (index_trobat - offset) % 26
+    index_trobat = rotor.index(lletra_a_buscar)
+    index_final = (index_trobat - canvi) % 26
 
     return index_final
 
