@@ -94,8 +94,8 @@ def llegir_missatge(arxiu):
 
 def guardar_resultat(arxiu, text):
      try:
-          with open(arxiu_xifrat, "w") as file:
-               file.write(text_xifrat.strip())
+          with open(arxiu, "w") as file:
+               file.write(text.strip())
           return True
      except FileNotFoundError:
           print(f"ERROR: L'arxiu {arxiu} no s'ha trobat")
