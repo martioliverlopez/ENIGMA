@@ -8,3 +8,46 @@
 
 
 #formatear_salida(texto_cifrado): Agrupa el texto en bloques de 5 letras separados por espacios.
+
+def formatejar_entrada(text):
+
+def avançar_rotors(posicions, notches):
+    p1, p2, p3 = posicions
+    n1, n2, n3 = notches
+    moure_rotor1 = True
+    moure_rotor2 = False
+    moure_rotor3 = False
+    if p1 == n1:
+        moure_rotor2 = True
+    if p2 == n2 and moure_rotor2:
+        moure_rotor3 = True
+
+    final1 = moviment(p1)
+    if moure_rotor2:
+        final2 = moviment(p2)
+    else:
+        final2 = p2
+    if moure_rotor3:
+        final3 = moviment(p3)
+    else:
+        final3 = p3
+
+    return [final1, final2, final3]
+
+def xifrar_lletra(lletra,rotors,posicions):
+
+def desxifrar_lletra(lletra,rotors,posicions):
+
+def formatejar_sortida(text):
+
+def a_lletra(index):
+    return configuration.ALFABET[index % 26]
+
+def a_index(lletra):
+    return configuration.ALFABET.index(lletra)
+
+def moviment(posicio):
+    posicio_en_index = a_index(posicio)
+    posicio_en_index += 1
+    return a_lletra(posicio_en_index)
+
