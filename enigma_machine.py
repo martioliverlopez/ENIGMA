@@ -35,14 +35,62 @@ def avançar_rotors(posicions, notches):
     return [final1, final2, final3]
 
 def xifrar_lletra(lletra,rotors,posicions):
-    index_entrada = a_index(lletra)
-    augment_rotor1 = a_index(posicions[0])
-    primer = index_entrada + augment_rotor1
+    index_actual = a_index(lletra)
+    cab1, cab2, cab3 = rotors
+    p1, p2, p3 = posicions
+    index_actual = passar_rotor(index_actual, cab1, p1)
+    index_actual = passar_rotor(index_actual, cab2, p2)
+    index_actual = passar_rotor(index_actual, cab3, p3)
+
+    return a_lletra(index_actual)
+
+def passar_rotor(index_entrada, rotor, posicio):
+    canvi = a_index(posicio)
+    
+    index_ajustat = (index_entrada + canvi) % 26
+    
+    lletra_sortida = rotor[index_ajustat]
+    index_transformat = a_index(lletra_sortida)
+    
+    index_final = (index_transformat - canvi) % 26
+    
+    return index_final
     
 
 def desxifrar_lletra(lletra,rotors,posicions):
+    index_actual = a_index(lletra)
+
+    cab1, cab2, cab3 = rotors
+    pos1, pos2, pos3 = posicions
+
+    index_actual = passar_pel_rotor_invers(index_actual, cab3, pos3)
+    index_actual = passar_pel_rotor_invers(index_actual, cab2, pos2)
+    index_actual = passar_pel_rotor_invers(index_actual, cab1, pos1)
+
+    return a_lletra(index_actual)
+    
+
+def passar_pel_rotor_invers(index_entrada, rotor, posicio_rotor):
+    canvi = a_index(posicio_rotor)
+
+    index_ajustat = (index_entrada + offset) % 26
+    lletra_a_buscar = a_lletra(index_ajustat)
+
+    index_trobat = cablejat_rotor.index(lletra_a_buscar)
+    index_final = (index_trobat - offset) % 26
+
+    return index_final
+
 
 def formatejar_sortida(text):
+    resultat = []
+
+    for i in range(0, len(text), configuration.AGRUPACIÓ):
+        grup = text[i:i + mida]
+        resultat.append(grup)
+
+    return " ".join(resultat)
+
 
 def a_lletra(index):
     return configuration.ALFABET[index % 26]
