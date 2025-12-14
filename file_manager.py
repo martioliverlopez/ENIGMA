@@ -43,7 +43,7 @@ def guardar_rotor(rotor,cablejat,notch): #S'utilitzaran com a arguments el rotor
           notch = notch.strip().upper()
           cablejat_provat = validar_permutacio(cablejat)
           if cablejat_provat == False:
-                    print("El cablejat introduït no és correcte")
+               print("El cablejat introduït no és correcte")
                return False
           else:
                if notch == "":
