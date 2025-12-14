@@ -92,7 +92,14 @@ def llegir_missatge(arxiu):
           print(f"ERROR: Error inesperat: {error}")
           return False
 
-def guardar_resultat(arxiu_xifrat,text_xifrat):
-     with open(arxiu_xifrat, "w") as file:
-        text_xifrat.strip()
-        file.write(text_xifrat)
+def guardar_resultat(arxiu, text):
+     try:
+          with open(arxiu_xifrat, "w") as file:
+               file.write(text_xifrat.strip())
+          return True
+     except FileNotFoundError:
+          print(f"ERROR: L'arxiu {arxiu} no s'ha trobat")
+          return False
+     except Exception as error:
+          print(f"ERROR: Error inesperat: {error}")
+          return False
