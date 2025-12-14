@@ -35,6 +35,10 @@ def avançar_rotors(posicions, notches):
     return [final1, final2, final3]
 
 def xifrar_lletra(lletra,rotors,posicions):
+    index_entrada = a_index(lletra)
+    augment_rotor1 = a_index(posicions[0])
+    primer = index_entrada + augment_rotor1
+    
 
 def desxifrar_lletra(lletra,rotors,posicions):
 
