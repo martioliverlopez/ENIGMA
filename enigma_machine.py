@@ -1,7 +1,6 @@
 import configuration
 
-def formatejar_entrada(text):
-
+#La funció gestiona la llogica d'odómetre a l'hora d'avançar els rotors
 def avançar_rotors(posicions, notches):
     p1, p2, p3 = posicions
     n1, n2, n3 = notches
@@ -25,6 +24,8 @@ def avançar_rotors(posicions, notches):
 
     return [final1, final2, final3]
 
+
+#La funció serveix per a xifrar el text lletra a lletra
 def xifrar_lletra(lletra,rotors,posicions):
     index_actual = a_index(lletra)
     cab1, cab2, cab3 = rotors
@@ -35,6 +36,7 @@ def xifrar_lletra(lletra,rotors,posicions):
 
     return a_lletra(index_actual)
 
+#La funció serveix per al xifratge, per a fer la transacció d'entrada/sortida entre els rotors
 def passar_rotor(index_entrada, rotor, posicio):
     canvi = a_index(posicio)
     
@@ -47,7 +49,7 @@ def passar_rotor(index_entrada, rotor, posicio):
     
     return index_final
     
-
+#La funció serveix per a desxifrar el text lletra a lletra
 def desxifrar_lletra(lletra,rotors,posicions):
     index_actual = a_index(lletra)
 
@@ -60,7 +62,7 @@ def desxifrar_lletra(lletra,rotors,posicions):
 
     return a_lletra(index_actual)
     
-
+#La funció serveix per al desxifratge, per a fer la transacció d'entrada/sortida entre els rotors
 def passar_pel_rotor_invers(index_entrada, rotor, posicio_rotor):
     canvi = a_index(posicio_rotor)
 
@@ -72,23 +74,26 @@ def passar_pel_rotor_invers(index_entrada, rotor, posicio_rotor):
 
     return index_final
 
-
+#La funció serveix per a agrupar el text resultant en grups de 5
 def formatejar_sortida(text):
+    mida = configuration.AGRUPACIÓ
     resultat = []
 
-    for i in range(0, len(text), configuration.AGRUPACIÓ):
+    for i in range(0, len(text), mida):
         grup = text[i:i + mida]
         resultat.append(grup)
 
     return " ".join(resultat)
 
-
+#La funció serveix per a obtenir la lletra de l'alfabet a partir de l'index 
 def a_lletra(index):
     return configuration.ALFABET[index % 26]
 
+#La funció serveix per a obtenir l'index de l'alfabet a partir de la lletra
 def a_index(lletra):
     return configuration.ALFABET.index(lletra)
 
+#La funció serveix per a augmentar en 1 la posicio del rotor
 def moviment(posicio):
     posicio_en_index = a_index(posicio)
     posicio_en_index += 1

@@ -4,12 +4,14 @@ import configuration
 import file_manager
 import enigma_machine
 
-
+#La funció serveix per a que no s'acumuli l'historial d'accions a la consola
 def netejar_pantalla():
     if os.name == 'nt':
         os.system('cls')
     else:
         os.system('clear')
+
+#La funció serveix per a carregar els rotors de xifratge
 def carregar_rotors():
 
     r1 = file_manager.llegir_rotor(configuration.ROTOR1)
@@ -23,6 +25,7 @@ def carregar_rotors():
     print(f"[OK] Rotors carregats correctament: {configuration.ROTOR1}, {configuration.ROTOR2}, {configuration.ROTOR3}")
     return [r1, r2, r3]
 
+#La funció serveix per a que l'usuari esculli les finestres dels rotors
 def demanar_posicio_inicial():
     while True:
         entrada = input("Introdueix la posició inicial dels rotors (ex: A B C): ").upper().replace(" ", "")
@@ -30,33 +33,26 @@ def demanar_posicio_inicial():
             return [entrada[0], entrada[1], entrada[2]]
         print("[ERROR] Has d'introduir exactament 3 lletres vàlides (A-Z).")
 
+#La funció serveix per a 
 def processar_missatge(mode):
-    rotors_data = carregar_rotors()
-    if not rotors_data:
-        return
+    dades_rotors = carregar_rotors()
+    if not dades_rotors:
+        return None
 
-    cablejats = [r['cablejat'] for r in rotors_data]
-    notches = [r['notch'] for r in rotors_data]
+    #extreure els cablejats i notches a partir dels rotors (diccionari amb cablejat i notch)
+    cablejats = [r['cablejat'] for r in dades_rotors]
+    notches = [r['notch'] for r in dades_rotors]
+    text_entrada = file_manager.llegir_missatge(configuration.TEXT_ORIGINAL) if mode == "xifrar" else file_manager.llegir_missatge(configuration.TEXT_XIFRAT).strip()
 
     posicions = demanar_posicio_inicial()
 
-    if mode == 'xifrar':
-        arxiu_entrada = configuration.TEXT_ORIGINAL
-        arxiu_sortida = configuration.TEXT_XIFRAT
-        print(f"Llegint missatge original de {arxiu_entrada}...")
-    else:
-        arxiu_entrada = configuration.TEXT_XIFRAT
-        arxiu_sortida = configuration.TEXT_DESXIFRAT
-        print(f"Llegint missatge xifrat de {arxiu_entrada}...")
-
-    text_entrada = file_manager.llegir_missatge(arxiu_entrada)
-
     if text_entrada is False:
-        return
-
+        return None
     resultat = ""
 
     for lletra in text_entrada:
+        posicions = enigma_machine.avançar_rotors(posicions, notches)
+
         if mode == 'xifrar':
             lletra_transformada = enigma_machine.xifrar_lletra(lletra, cablejats, posicions)
         else:
@@ -69,47 +65,50 @@ def processar_missatge(mode):
     else:
         text_final = resultat
 
-    if file_manager.guardar_resultat(arxiu_sortida, text_final):
-        print(f"\n[OK] Procés finalitzat. Resultat guardat a '{arxiu_sortida}'.")
+    arxiu_desti = configuration.TEXT_XIFRAT if mode == "xifrar" else configuration.TEXT_DESXIFRAT
+
+    if file_manager.guardar_resultat(arxiu_desti, text_final):
+        print(f"\n[OK] Procés finalitzat. Resultat guardat a '{arxiu_desti}'.")
         print(f"Resultat parcial: {text_final[:20]}...")
     else:
         print("[ERROR] No s'ha pogut guardar l'arxiu.")
+
         
     input("\nPrem ENTER per tornar al menú...")
 
-    def editar_rotor():
-        print("\n--- EDITAR ROTORS ---")
-        print(f"1. {configuration.ROTOR1}")
-        print(f"2. {configuration.ROTOR2}")
-        print(f"3. {configuration.ROTOR3}")
-        opcio = input("Escull quin rotor vols editar (1-3): ")
-        mapa_rotors = {'1': configuration.ROTOR1, '2': configuration.ROTOR2, '3': configuration.ROTOR3}
+def editar_rotor():
+    print("\n--- EDITAR ROTORS ---")
+    print(f"1. {configuration.ROTOR1}")
+    print(f"2. {configuration.ROTOR2}")
+    print(f"3. {configuration.ROTOR3}")
+    opcio = input("Escull quin rotor vols editar (1-3): ")
+    mapa_rotors = {'1': configuration.ROTOR1, '2': configuration.ROTOR2, '3': configuration.ROTOR3}
     
-        if opcio not in mapa_rotors:
-            print("[ERROR] Opció incorrecta.")
-            return
+    if opcio not in mapa_rotors:
+        print("[ERROR] Opció incorrecta.")
+        return None
 
-        ruta_rotor = mapa_rotors[opcio]
-        print(f"Editant {ruta_rotor}...")
+    ruta_rotor = mapa_rotors[opcio]
+    print(f"Editant {ruta_rotor}...")
     
-        nou_cablejat = input("Introdueix la nova permutació (26 lletres úniques): ").upper()
-        nou_notch = input("Introdueix el notch (lletra) [Buit per defecte 'Z']: ").upper()
+    nou_cablejat = input("Introdueix la nova permutació (26 lletres úniques): ").upper()
+    nou_notch = input("Introdueix el notch (lletra) [Buit per defecte 'Z']: ").upper()
     
-        if file_manager.guardar_rotor(ruta_rotor, nou_cablejat, nou_notch):
-            print(f"[OK] {ruta_rotor} actualitzat correctament.")
+    if file_manager.guardar_rotor(ruta_rotor, nou_cablejat, nou_notch):
+        print(f"[OK] {ruta_rotor} actualitzat correctament.")
     
-        input("\nPrem ENTER per tornar al menú...")
+    input("\nPrem ENTER per tornar al menú...")
 
 def main():
     while True:
         netejar_pantalla()
-        print("************************************")
+        print("*******************************************")
         print("      MÀQUINA ENIGMA - SIMULADOR    ")
-        print("************************************")
-        print("1. Xifrar missatge")
-        print("2. Desxifrar missatge")
-        print("3. Editar rotors")
-        print("4. Sortir")
+        print("*******************************************")
+        print("         1. Xifrar missatge")
+        print("         2. Desxifrar missatge")
+        print("         3. Editar rotors")
+        print("         4. Sortir")
         
         opcio = input("\nSelecciona una opció: ")
 

@@ -10,4 +10,4 @@ TEXT_ORIGINAL = "missatge.txt"
 TEXT_XIFRAT = "xifrat.txt"
 TEXT_DESXIFRAT = "desxifrat.txt"
 NOTCH_INICIAL = "Z" #aquest sera el notch en cas de no ser especificat per l'usuari
-AGRUPACIÓ = 5 #grup de lletres amb el format que treballa ENIGMA
+AGRUPACIÓ = 5 #grup de lletres amb el format militar que treballa ENIGMA

@@ -1,13 +1,6 @@
-#s'encarregara de llegir i escriure arxius, a més de validar les dades dels rotors
-#funcions: 
-#llegir_rotor(ruta), llegir l'arxiu, extreure cablejat i notch
-#guardar_rotor(ruta,cablejat,notch), guarda una nova configuracio (per a l'opcio editar rotors)
-#validar_permutacio(cablejat), verifica que tingui 26 lletres úniques
-#llegir_missatge(ruta), llegeix el missatge original
-#guardar_resultat(ruta,text), escriu el resultat a xifrat.txt o a desxifrat.txt
-
 import configuration
 
+#La funció llegeix l'arxiu, extreu cablejat i notch
 def llegir_rotor(rotor):
     try:
         with open(rotor) as file:
@@ -37,6 +30,7 @@ def llegir_rotor(rotor):
          print(f"ERROR: Error inesperat: {error}")
          return False
     
+#La funció guarda una nova configuracio (per a l'opcio editar rotors)
 def guardar_rotor(rotor,cablejat,notch): #S'utilitzaran com a arguments el rotor que es vulgui editar, el cablejat que introdueixi l'usuari, i el notch, que es pot afegir o no
      try:
           cablejat = cablejat.strip().upper()
@@ -48,8 +42,6 @@ def guardar_rotor(rotor,cablejat,notch): #S'utilitzaran com a arguments el rotor
           else:
                if notch == "":
                     notch = configuration.NOTCH_INICIAL
-               else:
-                    pass
                with open(rotor, "w") as file:
                     file.write(cablejat + "\n")
                     file.write(notch)
@@ -61,20 +53,25 @@ def guardar_rotor(rotor,cablejat,notch): #S'utilitzaran com a arguments el rotor
           print(f"ERROR: Error inesperat: {error}")
           return False
 
-
+#La funció verifica que tingui 26 lletres úniques
 def validar_permutacio(cablejat):
      cablejat = cablejat.strip().upper()
-     if cablejat.isalpha() == False:
-          print(f"ERROR: La permutació conté caràcters no vàlids")
-          return False
+
+     for lletra in cablejat:
+          if lletra not in configuration.ALFABET:
+               print(f"ERROR: La permutació conté caràcters no vàlids")
+               return False
+          
      if len(cablejat) != 26:
         print(f"ERROR: La permutació no té el nombre de caràcters requerits (26)")
         return False
+     
      if len(set(cablejat)) != 26:
         print(f"ERROR: Hi ha lletres repetides a la permutació")
         return False
      return True
 
+#La funció llegeix el missatge original
 def llegir_missatge(arxiu):
      try:
           with open(arxiu) as file:
@@ -91,7 +88,8 @@ def llegir_missatge(arxiu):
      except Exception as error:
           print(f"ERROR: Error inesperat: {error}")
           return False
-
+     
+#La funció escriu el resultat a xifrat.txt o a desxifrat.txt
 def guardar_resultat(arxiu, text):
      try:
           with open(arxiu, "w") as file:
